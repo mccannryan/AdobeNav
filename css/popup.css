@@ -1,0 +1,26 @@
+html, body {
+   font-family: 'Open Sans', sans-serif;
+}
+h2 {
+   font-family: 'Menlo', monospace;
+}
+.wrapper {
+   background: #eee;
+   width: 200px;
+
+   display: grid;
+   text-align: center;
+}
+.descriptors{
+   text-align: left;
+}
+#skipSpeed{
+   width: 50px;
+}
+
+#userControls {
+   padding: 1em;
+   display: grid;
+   grid-template-columns: 70% 30%;
+   grid-row-gap: 1em;
+}
