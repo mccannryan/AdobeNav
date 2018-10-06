@@ -1,4 +1,3 @@
-console.log("Foreground script running successfully");
 let ARROW_RIGHT = 39, ARROW_LEFT = 37;
 let SPACE = 13, PAUSE = 32;
 let SKIPDISTANCE_MULTIPLIER = 5;
@@ -29,10 +28,8 @@ function constructMessage(rec, act, prop){
 }
 
 function enablePresetState() {
-	console.log("enablepresentstate");
 	constructMessage('background.js', 'request', 'state');
 	chrome.runtime.sendMessage(message, (resp) => {
-		console.log("resp is ", resp);
 		if(resp.property == "true"){
 			active = 1;
 			initializeNavBar();
@@ -45,7 +42,6 @@ function enablePresetState() {
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-	console.log("message received", request);
 	if(request.receiver == "content.js"){
 		if(request.action != ""){
 			switch (request.action){
@@ -63,11 +59,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 					}
 					break;
 				case "set" :
-					console.log("set request received");
 					switch(request.property){
 						case 'speed' :
 							navControl.skipDistance = SKIPDISTANCE_MULTIPLIER * Number(request.value);
-							console.log("skip distance changed to", navControl.skipDistance);
 							constructMessage(request.sender, 'speed set', 'ok');
 							sendResponse(message);
 							break;
@@ -112,13 +106,11 @@ function updateNavBar () {
 	navControl.navbarPointerDims = navControl.navbarPointer.getBoundingClientRect();
 }
 
-//Toggle to determine play/pause state
 function toggler() {
 	if (typeof toggler.swap === "undefined") toggler.swap = 0;
 	return (++toggler.swap) % 2;
 }
 
-//Triggers a play or a pause based on the state
 function toggleState(stopped){
 	if(stopped) play();
 	else pause();
@@ -142,18 +134,12 @@ function pause() {
 	navControl.pauseBtn.click();
 }
 
-
-//simulates a click event on the page
 function simClick(element, screenx, screeny, clientx, clienty) {
 	var evt = document.createEvent("MouseEvents");
 	evt.initMouseEvent("click", true, true, window,
 			0, screenx, screeny, clientx, clienty, false, false, false, false, 0, null);
 	element.dispatchEvent(evt);
 }
-
-
-//waits for enter/space to toggle play/pause
-
 
 function processKeyup(e){
 	e.preventDefault();
@@ -163,4 +149,7 @@ function processKeyup(e){
 		else if (e.keyCode == ARROW_RIGHT) forward();
 	}
 }
+
+//Super jenky way to check for page loading. 
+//DOMContentLoaded will NOT work. There are too many errors on the page.
 setTimeout(enablePresetState, 3000);
